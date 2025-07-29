@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animated Image Generator</title>
+    <style>
+        #image-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        img {
+            max-width: 100%;
+            animation: fadeIn 2s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div id="image-container">
+        <img id="generated-image" src="" alt="Generated Image" style="display:none;">
+    </div>
+    <input type="text" id="prompt" placeholder="Enter your prompt">
+    <button onclick="generateImage()">Generate Image</button>
+
+    <script>
+        async function generateImage() {
+            const prompt = document.getElementById('prompt').value;
+            const response = await fetch('/generate-image', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ prompt })
+            });
+            const data = await response.json();
+            if (response.ok) {
+                const img = document.getElementById('generated-image');
+                img.src = data.image_url;
+                img.style.display = 'block';
+            } else {
+                alert(data.error);
+            }
+        }
+    </script>
+</body>
+</html>
